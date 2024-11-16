@@ -1,15 +1,17 @@
+using ECommerce.Persistence.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddPersistenceServices(); // normalde presentation katmanýyla yatay iliþkide olan persistence ve infrastructure buradaki gibi pers. ve infr.
+                                           // içindeki serviceler için dependency injection uygulanmasý durumunda referans alýnabilir katmanlardýr.
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
