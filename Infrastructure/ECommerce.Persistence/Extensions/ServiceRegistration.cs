@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Abstractions;
-using ECommerce.Persistence.Concretes;
+﻿using ECommerce.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerce.Persistence.Extensions
@@ -7,12 +7,16 @@ namespace ECommerce.Persistence.Extensions
     public static class ServiceRegistration
     {
         public static void AddPersistenceServices(this IServiceCollection services)
-        { // persistence ta daha bir çok service olabilir bunları ioc container a ekleyebilmemiz için bu extension metodunu oluşturuyoruz.
-            services.AddSingleton<IProductService, ProductService>(); // uygulamanın çalışmaya başladığı andan duruncaya kadar geçen tüm süre boyunca
-                                                                      // yalnızca bir kez oluşturulur ve her zaman aynı nesne kullanılır. (addSingletonda)
+        { 
+            // connectionstring i kodların içinde değil bir json, xml, txt veya dış kaynaklı dosyalardan almak daha doğrudur. bunu da configuration paketi 
+            // ile sağlıyoruz. fakat başka yerlerde de connectionstringi kullanabiliriz ve single responsibility ye göre extension class oluşturmak 
+            // daha doğrudur çünkü burası serviceRegistiration class ı. bunun için aşağıdaki standart kodları buradan alıyoruz. 
+            // ConfigurationManager configurationManager = new();
+            // configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../../Presentation/ECommerce.WebAPI"));
+            // configurationManager.AddJsonFile("appsettings.json");
+
+            services.AddDbContext<ECommerceDbContext>(options => options.UseNpgsql(ConfigurationExtension.GetConnectionString()));
+
         }
-        // bu extension ı oluşturduktan sonra ioc container ı barındıran presentation katmanından çağrılması gerekiyor. (program.cs)
-        // uygulamayı ayağa kaldırdığımızda ioc container ayağa kalkacak ve program.cs deki fonksiyon ve daha sonra sonra bu extension çalışacak ve
-        // persistence taki service i ekleyecek.
     }
 }
