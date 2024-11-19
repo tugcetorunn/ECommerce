@@ -7,8 +7,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddPersistenceServices(); // normalde presentation katmanýyla yatay iliþkide olan persistence ve infrastructure buradaki gibi pers. ve infr.
-                                           // içindeki serviceler için dependency injection uygulanmasý durumunda referans alýnabilir katmanlardýr.
+builder.Services.AddPersistenceServices();
 
 var app = builder.Build();
 
