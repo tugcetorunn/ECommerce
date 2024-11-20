@@ -17,13 +17,13 @@ namespace ECommerce.Persistence.Repositories
 
         public async Task<bool> AddAsync(T entity)
         {
-            EntityEntry<T> entityEntry = await Table.AddAsync(entity); // addasync geriye entityentry<t> tipinde değer dönüyor.
+            EntityEntry<T> entityEntry = await Table.AddAsync(entity); 
             return entityEntry.State == EntityState.Added;
         }
 
         public async Task<bool> AddRangeAsync(List<T> entities)
         {
-            await Table.AddRangeAsync(entities); // addRangeAsync void tipli yani dönüş tipi yok
+            await Table.AddRangeAsync(entities); 
             return true;
         }
 
@@ -36,8 +36,6 @@ namespace ECommerce.Persistence.Repositories
         public async Task<bool> RemoveAsync(string id)
         {
             T value = await Table.FirstOrDefaultAsync(property => property.Id == Guid.Parse(id));
-            // EntityEntry<T> entityEntry = Table.Remove(value);
-            // return entityEntry.State == EntityState.Deleted; // entity alan remove fonksiyonu zaten bu iki satırdaki işlemi yapıyor onu kullanalım.
             return Remove(value);
         }
 
@@ -55,7 +53,7 @@ namespace ECommerce.Persistence.Repositories
 
         public bool UpdateRange(List<T> entities)
         {
-            Table.UpdateRange(entities); // void tipinde
+            Table.UpdateRange(entities); 
             return true;
         }
 
