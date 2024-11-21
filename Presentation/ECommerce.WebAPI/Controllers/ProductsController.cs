@@ -10,66 +10,41 @@ namespace ECommerce.WebAPI.Controllers
     {
         private readonly IProductWriteRepository productWriteRepository;
         private readonly IProductReadRepository productReadRepository;
+        private readonly IOrderWriteRepository orderWriteRepository;
+        private readonly IOrderReadRepository orderReadRepository;
+        private readonly ICustomerWriteRepository customerWriteRepository;
+        private readonly ICustomerReadRepository customerReadRepository;
 
-        public ProductsController(IProductWriteRepository _productWriteRepository, IProductReadRepository _productReadRepository)
+        public ProductsController(IProductWriteRepository _productWriteRepository, IProductReadRepository _productReadRepository, IOrderWriteRepository _orderWriteRepository, ICustomerWriteRepository _customerWriteRepository, ICustomerReadRepository _customerReadRepository, IOrderReadRepository _orderReadRepository)
         {
             productWriteRepository = _productWriteRepository;
             productReadRepository = _productReadRepository;
+            orderWriteRepository = _orderWriteRepository;
+            customerWriteRepository = _customerWriteRepository;
+            customerReadRepository = _customerReadRepository;
+            orderReadRepository = _orderReadRepository;
         }
 
         [HttpGet]
         public async Task Get()
         {
-            //await productWriteRepository.AddRangeAsync(new()
-            //{
-            //    new()
-            //    {
-            //        Id = Guid.NewGuid(),
-            //        Name = "Product 1",
-            //        CreatedDate = DateTime.UtcNow,
-            //        Price = 200,
-            //        Stock = 10
-            //    },
-            //    new()
-            //    {
-            //        Id = Guid.NewGuid(),
-            //        Name = "Product 2",
-            //        CreatedDate = DateTime.UtcNow,
-            //        Price = 400,
-            //        Stock = 5
-            //    },
-            //    new()
-            //    {
-            //        Id = Guid.NewGuid(),
-            //        Name = "Product 3",
-            //        CreatedDate = DateTime.UtcNow,
-            //        Price = 600,
-            //        Stock = 20
-            //    }
-            //});
-            //var count = await productWriteRepository.SaveChangesAsync();
+            // var customerId = Guid.NewGuid();
+            // await customerWriteRepository.AddAsync(new() { Name = "tugce", Id = customerId });
+            // customer ile order arasında foreign key olduğu için customer da bağlamamız gerekiyor.
+            // await orderWriteRepository.AddAsync(new(){ Description = "descripto", Address = "bursa", CustomerId = customerId });
+            // await orderWriteRepository.AddAsync(new(){ Description = "descripto 2", Address = "manisa", CustomerId = customerId });
+            // await orderWriteRepository.SaveChangesAsync(); // scoped ile register edildiği için tek bir requestte aynı context nesnesi üzerinde
+            //                                               // savechanges yapmış oluyoruz. hangi entity de ne işlem yapıyor olursak yapalım bir tane
+            //                                               // savechanges operasyonu aynı context nesnesi üzrinde hepsine uygulanır. 
 
-            var product1 = await productReadRepository.GetByIdAsync("d1f088c5-b2c8-4898-9af3-0bddedc021c0"); // önce tracking true iken çalıştıralım.
-            product1.Name = "Mouse";
-            await productWriteRepository.SaveChangesAsync();
-            // read işleminde tracking i inaktif etedik. ve gönderdiğimiz data takip edilmeye devam etti ve ismi mouse olarak değiştirip kaydettik takip
-            // ettiği için bunu da uyguladı.
-            // bir de tracking i inaktif edelim.
+            // insert için interceptor ı denedikten sonra update için deneyelim.
+            var order = await orderReadRepository.GetByIdAsync("edd4c3ea-b102-49c4-b875-8aa4a0729dda");
+            order.Description = "water"; // id ile getirdiğimiz order nesnesini ef core zaten track edeceği için buradaki değişikliği görecek. bu yüzden
+                                         // update operasyonu yapmasak da olur
+            await orderWriteRepository.SaveChangesAsync();
 
-            var product2 = await productReadRepository.GetByIdAsync("e3215396-78d0-446c-a7ca-867a33293167", false); 
-            product2.Name = "Klavye";
-            await productWriteRepository.SaveChangesAsync();
-            // tracking mekanizmasını kapattığımız için datayı getirdi ama takip etmedi. aşağıdaki değer tanımlamalarının hiçbir önemi olmadı bu yüzden.
 
-            // ayrıca read ile çektiğimiz bir veriyi nasıl bir de write yapabildik? repolar da context de scoped olduğu için bir requeste özel bir tane
-            // instance oluşturuldu. ve tüm taleplerde o instance ı gönderiyor. hem write hem read operasyonlarında da aynı context instance ı kullanılıyor.
-        }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
-        {
-            Product product = await productReadRepository.GetByIdAsync(id, false);
-            return Ok(product);
         }
     }
 }
