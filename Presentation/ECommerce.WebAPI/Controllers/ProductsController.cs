@@ -26,25 +26,10 @@ namespace ECommerce.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task Get()
+        public IQueryable<Order> Get()
         {
-            // var customerId = Guid.NewGuid();
-            // await customerWriteRepository.AddAsync(new() { Name = "tugce", Id = customerId });
-            // customer ile order arasında foreign key olduğu için customer da bağlamamız gerekiyor.
-            // await orderWriteRepository.AddAsync(new(){ Description = "descripto", Address = "bursa", CustomerId = customerId });
-            // await orderWriteRepository.AddAsync(new(){ Description = "descripto 2", Address = "manisa", CustomerId = customerId });
-            // await orderWriteRepository.SaveChangesAsync(); // scoped ile register edildiği için tek bir requestte aynı context nesnesi üzerinde
-            //                                               // savechanges yapmış oluyoruz. hangi entity de ne işlem yapıyor olursak yapalım bir tane
-            //                                               // savechanges operasyonu aynı context nesnesi üzrinde hepsine uygulanır. 
-
-            // insert için interceptor ı denedikten sonra update için deneyelim.
-            var order = await orderReadRepository.GetByIdAsync("edd4c3ea-b102-49c4-b875-8aa4a0729dda");
-            order.Description = "water"; // id ile getirdiğimiz order nesnesini ef core zaten track edeceği için buradaki değişikliği görecek. bu yüzden
-                                         // update operasyonu yapmasak da olur
-            await orderWriteRepository.SaveChangesAsync();
-
-
-
+            var orders = orderReadRepository.GetAll();
+            return orders;
         }
     }
 }

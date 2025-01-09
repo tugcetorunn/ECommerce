@@ -49,7 +49,11 @@ namespace ECommerce.Persistence.Contexts
                 _ = entryData.State switch // çıktı dönmesine gerek olmadığı için değer atamıyoruz. (discard yapılandırması)
                 {
                     EntityState.Added => entryData.Entity.CreatedDate = DateTime.UtcNow,
-                    EntityState.Modified => entryData.Entity.UpdatedDate = DateTime.UtcNow
+                    EntityState.Modified => entryData.Entity.UpdatedDate = DateTime.UtcNow,
+                    // alttaki üç satır switch hatası aldığımız için eklendi tüm durumların işlenmesi gerekiyormuş.
+                    EntityState.Unchanged => entryData.Entity.UpdatedDate, // Unchanged durumunda bir işlem yapılmaz
+                    EntityState.Detached => entryData.Entity.UpdatedDate,  // Detached durumunda da işlem yapılmaz
+                    EntityState.Deleted => entryData.Entity.UpdatedDate,   // İsterseniz Deleted için de işlem yapabilirsiniz
                 };
             }
             return await base.SaveChangesAsync(cancellationToken); // araya girdikten sonra metodun tekrardan devreye sokulduğu kod.
